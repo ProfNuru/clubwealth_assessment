@@ -25,8 +25,6 @@ export const StateProvider = ({ children }) => {
     })
     const [displayType, setDisplayType] = useState({
         table_view:true,
-        gallery_view:false,
-        accordion_view:false
     })
 
     const updateApiDisplayStatus = (displayStatus) => {
