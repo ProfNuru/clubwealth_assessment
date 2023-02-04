@@ -1,0 +1,11 @@
+.btn{
+    padding:5px 15px;
+    border:none;
+    cursor: pointer;
+    font-weight: bolder;
+    border-radius: 5px;
+    text-transform: capitalize;
+}
+.btn:hover{
+    background-color: #204E7B;
+}

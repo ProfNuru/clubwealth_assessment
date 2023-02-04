@@ -1,0 +1,13 @@
+.main{
+    max-width: 1500px;
+    margin: 30px auto;
+    padding:5px;
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+}
+.displayControls{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

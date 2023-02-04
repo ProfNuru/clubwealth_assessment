@@ -1,0 +1,46 @@
+.tableWrapper{
+    width:100%;
+    border-bottom: 2px solid var(--btn-bg);
+    padding-bottom:20px;
+}
+.tableHeading{
+    width:100%;
+    text-align:center;
+    color:#000;
+    text-transform:uppercase;
+}
+.dataCategories{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:2%;
+}
+.categoryOption{
+    display:flex;
+    flex-direction:row-reverse;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+}
+.categoryOption label{
+    color:#333;
+    font-weight:bolder;
+}
+
+/* Table grid */
+.tableGrid{
+    width:100%;
+    display: grid;
+    cursor: grab;
+    overflow: auto;
+}
+
+/* Pages */
+.pagesField{
+    display:flex;
+    margin:5px auto;
+    width:100%;
+    overflow: auto;
+    padding:5px;
+}
