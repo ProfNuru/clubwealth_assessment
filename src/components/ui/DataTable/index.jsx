@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useStatesContext } from '../../../hooks/StatesHook'
-import useRequestResource from '../../../hooks/useRequestResource'
 import Loading from '../Loading'
 import classes from './DataTable.module.css'
 import moment from 'moment'
 import PageCell from '../PageCell'
+import useRequestResource from '../../../hooks/useRequestResource'
+import { useStatesContext } from '../../../hooks/StatesHook'
+import { useUpdateStatesContext } from '../../../hooks/StatesHook'
+
 
 const DataTable = () => {
   const [apiToFetch, setApiToFetch] = useState([])
@@ -12,7 +14,15 @@ const DataTable = () => {
   const [pageSize, setPageSize] = useState({})
   const [page, setPage] = useState({})
 
-  const { apiDisplayStatus } = useStatesContext()
+  const { 
+    apiDisplayStatus,
+    searchFilter
+  } = useStatesContext()
+
+  const {
+    setSearchTerm
+  } = useUpdateStatesContext()
+
   const dateFormats = [
       moment.ISO_8601,
       "MM/DD/YYYY  :)  HH*mm*ss"
@@ -41,27 +51,6 @@ const DataTable = () => {
   const switchPage = (lbl,num)=>{
     setPage({...page,[lbl]:num})
   }
-
-  // const changePage = () => {
-  //   let paginatedDataObj = {}
-  //   let pageSizeObj = {}
-  //   let pageObj = {}
-  //   apiToFetch.forEach((api)=>{
-  //     pageSizeObj[api] = 10
-  //     pageObj[api] = 1
-  //     if(data[api]){
-  //       let chunks = []
-  //       for (let i = 0; i < data[api].length; i += pageSizeObj[api]) {
-  //         const chunk = data[api].slice(i, i + pageSizeObj[api]);
-  //         chunks.push(chunk)
-  //       }
-  //       paginatedDataObj[api] = chunks
-  //     }
-  //   })
-  //   setPaginatedData(paginatedDataObj)
-  //   setPageSize(pageSizeObj)
-  //   setPage(pageObj)
-  // }
 
   function formatNumberString(string){
     let formatted = !isNaN(string) ?
@@ -99,12 +88,14 @@ const DataTable = () => {
     let pageSizeObj = {}
     let pageObj = {}
     apiToFetch.forEach((api)=>{
-      pageSizeObj[api] = 10
+      pageSizeObj[api] = pageSize[api] ? pageSize[api] : 10
       pageObj[api] = 1
       if(data[api]){
         let chunks = []
-        for (let i = 0; i < data[api].length; i += pageSizeObj[api]) {
-          const chunk = data[api].slice(i, i + pageSizeObj[api]);
+        let searchLogic = (row)=>JSON.stringify(row).toLowerCase().search(searchFilter[api].toLowerCase()) > -1
+        let searchedData = data[api].filter((dta)=>searchLogic(dta))
+        for (let i = 0; i < searchedData.length; i += pageSizeObj[api]) {
+          const chunk = searchedData.slice(i, i + pageSizeObj[api]);
           chunks.push(chunk)
         }
         paginatedDataObj[api] = chunks
@@ -113,8 +104,8 @@ const DataTable = () => {
     setPaginatedData(paginatedDataObj)
     setPageSize(pageSizeObj)
     setPage(pageObj)
-  },[apiToFetch, data])
-  
+  },[apiToFetch, data, searchFilter])
+
   return (
     <>
       {apiToFetch?.map((label)=><div key={label}
@@ -136,7 +127,17 @@ const DataTable = () => {
               checked={ctg===subCategory[label]}
               onChange={(e)=>selectCategory(label,ctg)}
             />
-          </div>)}
+          </div>)}   
+        </div>
+
+        {/* Search field */}
+        <div className={classes.searchFormField}>
+          <input 
+          type="text" 
+          value={searchFilter[label]}
+          onChange={(e)=>setSearchTerm(label, e.target.value)}
+          placeholder={`Search ${label.replace('_',' ')}`}
+          />
         </div>
 
         {/* Table */}
@@ -165,7 +166,8 @@ const DataTable = () => {
           }}>{col.replaceAll('_',' ').replace(/([A-Z]+)/g, ' $1').trim()}</div>)}
 
           {/* Table data */}
-          {(paginatedData[label] && paginatedData[label][page[label]-1]) && paginatedData[label][page[label]-1].map((row,i)=><React.Fragment key={i}>
+          {(paginatedData[label] && paginatedData[label][page[label]-1]) && 
+          paginatedData[label][page[label]-1].map((row,i)=><React.Fragment key={i}>
             {Object.keys(row).map((record)=><div
             key={record}
             style={{

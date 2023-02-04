@@ -12,6 +12,12 @@ export function useUpdateStatesContext(){
 }
 
 export const StateProvider = ({ children }) => {
+    const [dataFilters, setDataFilters] = useState([])
+    const [searchFilter, setSearchFilter] = useState({
+        star_wars:'',
+        covid:'',
+        cats:''
+    })
     const [apiDisplayStatus, setApiDisplayStatus] = useState({
         star_wars:true,
         covid:false,
@@ -30,15 +36,21 @@ export const StateProvider = ({ children }) => {
     const updateDisplayType = (disType)=>{
         setDisplayType(disType)
     }
+    
+    const setSearchTerm = (lbl,term) => {
+        setSearchFilter({...searchFilter,[lbl]:term})
+    }
 
     return (
         <StateContext.Provider value={{
             apiDisplayStatus,
-            displayType
+            displayType,
+            searchFilter
         }}>
             <StateUpdateContext.Provider value={{
                 updateApiDisplayStatus,
-                updateDisplayType
+                updateDisplayType,
+                setSearchTerm
             }}>
                 {children}
             </StateUpdateContext.Provider>

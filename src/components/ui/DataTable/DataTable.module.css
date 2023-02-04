@@ -15,6 +15,30 @@
     justify-content:center;
     align-items:center;
     gap:2%;
+    position:relative;
+    padding:5px;
+}
+.pageSizeForm{
+    position: absolute;
+    right:0;
+    display: flex;
+    gap:5px;
+    align-items: center;
+}
+.pageSizeForm input{
+    width:60px;
+    color:var(--btn-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bolder;
+    border-radius: 5px;
+    border:1px solid #ccc;
+}
+.pageSizeForm label{
+    color:var(--btn-bg);
+    font-weight: bolder;
 }
 .categoryOption{
     display:flex;
@@ -43,4 +67,26 @@
     width:100%;
     overflow: auto;
     padding:5px;
+}
+.searchFormField{
+    width:100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin:10px 0px;
+}
+.searchFormField input{
+    color:#000;
+    font-size:1.2em;
+    font-weight:bolder;
+    padding:5px 10px;
+    border-radius: 10px;
+    border:1px solid var(--btn-bg);
+    width:500px;
+}
+
+@media only screen and (max-width:600px){
+    .searchFormField input{
+        width:100%;
+    }
 }
