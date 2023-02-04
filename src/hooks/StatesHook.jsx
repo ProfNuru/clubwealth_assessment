@@ -41,16 +41,22 @@ export const StateProvider = ({ children }) => {
         setSearchFilter({...searchFilter,[lbl]:term})
     }
 
+    const updateFilters = (record) => {
+        setDataFilters([...dataFilters,record])
+    }
+
     return (
         <StateContext.Provider value={{
             apiDisplayStatus,
             displayType,
-            searchFilter
+            searchFilter,
+            dataFilters
         }}>
             <StateUpdateContext.Provider value={{
                 updateApiDisplayStatus,
                 updateDisplayType,
-                setSearchTerm
+                setSearchTerm,
+                updateFilters
             }}>
                 {children}
             </StateUpdateContext.Provider>

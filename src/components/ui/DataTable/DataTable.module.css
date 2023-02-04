@@ -84,9 +84,97 @@
     border:1px solid var(--btn-bg);
     width:500px;
 }
+.recordModal{
+    position:fixed;
+    z-index:20;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background-color: rgba(0,0,0,0.5);
+    display:flex;
+    justify-content: center;
+}
+.modalContent{
+    position:relative;
+    background-color: #fff;
+    max-width:900px;
+    border-radius:10px;
+    padding:15px;
+    overflow:auto;
+}
+.closeBtn{
+    position:absolute;
+    top:15px;
+    right:15px;
+    background-color: #fff;
+    color:darkred;
+    font-weight:bolder;
+    font-size:1.4em;
+    padding:1px 8px;
+    border:1px solid darkred;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.modalContent h1{
+    color:#000;
+    text-transform: capitalize;
+    text-align: center;
+}
+.modalContent h2{
+    color:#000;
+    text-transform: capitalize;
+    text-align: center;
+}
+.removeEntryBtn{
+    color:darkred;
+    background-color: #fff;
+    border:1px solid darkred;
+    font-size:1.2em;
+    font-weight:bolder;
+    padding:5px 10px;
+    border-radius: 10px;
+    transition:0.4s all;
+    margin-bottom:15px;
+}
+.removeEntryBtn:hover{
+    background-color: darkred;
+    color:#fff;
+}
+.detailsGrid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:15px;
+}
+.detailFields{
+    display:flex;
+    gap:10px;
+}
+.detailFields p{
+    font-size:1.2em;
+}
+.detailFields p span{
+    font-weight:bolder;
+    color:#000;
+    text-transform: capitalize;
+}
+.detailFields p{
+    color:#000;
+}
 
 @media only screen and (max-width:600px){
     .searchFormField input{
+        width:100%;
+    }
+    .detailsGrid{
+        grid-template-columns: 1fr;
+    }
+}
+@media only screen and (max-width:900px){
+    .detailsGrid{
+        grid-template-columns: 1fr;
+    }
+    .modalContent{
         width:100%;
     }
 }
