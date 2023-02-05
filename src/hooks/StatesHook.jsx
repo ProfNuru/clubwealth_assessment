@@ -18,6 +18,11 @@ export const StateProvider = ({ children }) => {
         covid:'',
         cats:''
     })
+    const [sortColumn, setSortColumn] = useState({
+        star_wars:'',
+        covid:'',
+        cats:''
+    })
     const [apiDisplayStatus, setApiDisplayStatus] = useState({
         star_wars:true,
         covid:false,
@@ -43,18 +48,24 @@ export const StateProvider = ({ children }) => {
         setDataFilters([...dataFilters,record])
     }
 
+    const setSortBy = (column,value) => {
+        setSortColumn({...sortColumn,[column]:value})
+    }
+
     return (
         <StateContext.Provider value={{
             apiDisplayStatus,
             displayType,
             searchFilter,
-            dataFilters
+            dataFilters,
+            sortColumn
         }}>
             <StateUpdateContext.Provider value={{
                 updateApiDisplayStatus,
                 updateDisplayType,
                 setSearchTerm,
-                updateFilters
+                updateFilters,
+                setSortBy
             }}>
                 {children}
             </StateUpdateContext.Provider>

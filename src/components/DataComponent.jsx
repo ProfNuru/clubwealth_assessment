@@ -38,6 +38,17 @@ const DataComponent = () => {
 
   return (
     <Suspense fallback={<h5>Loading</h5>}>
+      <ul>
+        <li style={{
+          color:'#000'
+        }}>Click the button above to select data</li>
+        <li style={{
+          color:'#000'
+        }}>Click the columns in the table to filter by that column</li>
+        <li style={{
+          color:'#000'
+        }}>Click a row to view details of that record</li>
+      </ul>
       {selectedDisplayType}
     </Suspense>
   )

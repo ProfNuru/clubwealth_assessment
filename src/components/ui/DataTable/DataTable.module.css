@@ -56,7 +56,6 @@
 .tableGrid{
     width:100%;
     display: grid;
-    cursor: grab;
     overflow: auto;
 }
 

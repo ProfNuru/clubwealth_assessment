@@ -7,7 +7,6 @@ import useRequestResource from '../../../hooks/useRequestResource'
 import { useStatesContext } from '../../../hooks/StatesHook'
 import { useUpdateStatesContext } from '../../../hooks/StatesHook'
 
-
 const DataTable = () => {
   const [apiToFetch, setApiToFetch] = useState([])
   const [paginatedData, setPaginatedData] = useState({})
@@ -20,12 +19,14 @@ const DataTable = () => {
   const { 
     apiDisplayStatus,
     searchFilter,
-    dataFilters
+    dataFilters,
+    sortColumn
   } = useStatesContext()
 
   const {
     setSearchTerm,
-    updateFilters
+    updateFilters,
+    setSortBy
   } = useUpdateStatesContext()
 
   const dateFormats = [
@@ -67,9 +68,41 @@ const DataTable = () => {
     setSelectedTableRow(null)
   }
 
+  // Logic for sorting objects by key
+  const sortData = (objs, objKey) => {
+    function dynamicSort(property) {
+      var sortOrder = 1;
+      if(property[0] === "-") {
+          sortOrder = -1;
+          property = property.substr(1);
+      }
+      return function (a,b) {
+          /* next line works with strings and numbers, 
+           * and you may want to customize it to your needs
+           */
+          let first_value = isNaN(a[property]) ? a[property] : parseFloat(a[property])
+          let second_value = isNaN(b[property]) ? b[property] : parseFloat(b[property])
+          
+          var result = (first_value < second_value) ? -1 
+          : (first_value > second_value) ? 1 : 0;
+          return result * sortOrder;
+      }
+    }
+    let objArr
+    if(objs){
+      objArr = [...objs]
+      objArr.sort(dynamicSort(objKey))
+    }
+    return objArr
+  }
+
   const filterOutRecord = (record) => {
     setShowDetailsModal(false)
     updateFilters(record)
+  }
+
+  const sortBy = (col,value)=>{
+    setSortBy(col,value)
   }
 
   function formatNumberString(string){
@@ -124,7 +157,8 @@ const DataTable = () => {
           }
           return true
         }
-        let searchedData = data[api].filter((dta)=>searchLogic(dta))
+        let searchedData = sortData(data[api],sortColumn[api])
+                                    .filter((dta)=>searchLogic(dta))
                                     .filter((rec)=>filterLogic(rec))
 
         for (let i = 0; i < searchedData.length; i += pageSizeObj[api]) {
@@ -141,7 +175,8 @@ const DataTable = () => {
     apiToFetch, 
     data, 
     searchFilter,
-    dataFilters
+    dataFilters,
+    sortColumn
   ])
 
   return (
@@ -156,6 +191,7 @@ const DataTable = () => {
           <button 
           onClick={()=>filterOutRecord(selectedTableRow?.data)}
           className={classes.removeEntryBtn}>Remove this record</button>
+          <small style={{color:'#000',padding:'0px 10px'}}>This removes this record from the table</small>
           
           <div className={classes.detailsGrid}>
             {Object.keys(selectedTableRow?.data).map((field,i)=><div 
@@ -208,6 +244,7 @@ const DataTable = () => {
         }}>
           {/* Column heads */}
           {data[label] && Object.keys(data[label][0])?.map((col,i)=><div
+          onClick={()=>sortBy(label,col)}
           key={col}
           style={{
             backgroundColor:'var(--btn-bg)',
