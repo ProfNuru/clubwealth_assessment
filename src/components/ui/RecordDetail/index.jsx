@@ -143,10 +143,6 @@ const RecordDetail = ({
                                 </p>
                             </div>)}
                         </div>)}
-                        {loadingAll && <Loading />}
-                        {err.error && <ErrorFeedback
-                            msg={err.msg}
-                        />}
                     </div>
                     </React.Fragment> : null
                 }
@@ -169,6 +165,10 @@ const RecordDetail = ({
                 </div>
             })}
             </div>
+            {loadingAll && <Loading />}
+            {err.error && <ErrorFeedback
+                msg={err.msg}
+            />}
         </div>
     </div>
   )
