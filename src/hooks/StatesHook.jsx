@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
+import useLocalStorage from './useLocalStorage'
 
 const StateContext = React.createContext()
 const StateUpdateContext = React.createContext()
@@ -12,23 +13,23 @@ export function useUpdateStatesContext(){
 }
 
 export const StateProvider = ({ children }) => {
-    const [dataFilters, setDataFilters] = useState([])
-    const [searchFilter, setSearchFilter] = useState({
+    const [dataFilters, setDataFilters] = useLocalStorage('dataFilters',[])
+    const [searchFilter, setSearchFilter] = useLocalStorage('searchFilter', {
         star_wars:'',
         covid:'',
         cats:''
     })
-    const [sortColumn, setSortColumn] = useState({
+    const [sortColumn, setSortColumn] = useLocalStorage('sortColumn',{
         star_wars:'',
         covid:'',
         cats:''
     })
-    const [apiDisplayStatus, setApiDisplayStatus] = useState({
+    const [apiDisplayStatus, setApiDisplayStatus] = useLocalStorage('apiDisplayStatus',{
         star_wars:true,
         covid:false,
         cats:false
     })
-    const [displayType, setDisplayType] = useState({
+    const [displayType, setDisplayType] = useLocalStorage('displayType',{
         table_view:true,
     })
 

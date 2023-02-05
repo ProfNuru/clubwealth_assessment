@@ -3,6 +3,7 @@ import { useStatesContext } from './StatesHook'
 import starwars from "../APIs/starwars"
 import covid from "../APIs/covid"
 import cats from "../APIs/cats"
+import useLocalStorage from './useLocalStorage'
 
 const useRequestResource = ({ dataset }) => {
     const [data, setData] = useState({
@@ -11,7 +12,7 @@ const useRequestResource = ({ dataset }) => {
         cats:null
     })
     const [subCategories, setSubCategories] = useState({})
-    const [subCategory, setSubCategory] = useState({})
+    const [subCategory, setSubCategory] = useLocalStorage('subCategory',{})
     const [loading, setLoading] = useState({
         star_wars:false,
         covid:false,
@@ -75,12 +76,19 @@ const useRequestResource = ({ dataset }) => {
     },[dataset])
 
     useEffect(()=>{
-        Object.keys(apiObjects).forEach(api=>{
-            if(subCategories[api]){
+        if(Object.keys(subCategory).length <= 0){
+            Object.keys(apiObjects).forEach(api=>{
+                if(subCategories[api]){
+                    setSubCategory((prevSubCategories)=>({...prevSubCategories,[api]:subCategories[api][0]}))
+                }
+            })
+        }
+        Object.keys(apiDisplayStatus).forEach(api=>{
+            if(subCategories[api] && !subCategory[api]){
                 setSubCategory((prevSubCategories)=>({...prevSubCategories,[api]:subCategories[api][0]}))
             }
         })
-    },[subCategories])
+    },[subCategories,subCategory,apiDisplayStatus])
     
     useEffect(()=>{
         // console.log(subCategory)
