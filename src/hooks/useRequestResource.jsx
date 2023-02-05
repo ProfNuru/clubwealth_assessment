@@ -12,6 +12,7 @@ const useRequestResource = ({ dataset }) => {
         cats:null
     })
     const [subCategories, setSubCategories] = useState({})
+    const [selectedColumns, setSelectedColumns] = useLocalStorage('selectedColumns',{})
     const [subCategory, setSubCategory] = useLocalStorage('subCategory',{})
     const [loading, setLoading] = useState({
         star_wars:false,
@@ -87,8 +88,11 @@ const useRequestResource = ({ dataset }) => {
             if(subCategories[api] && !subCategory[api]){
                 setSubCategory((prevSubCategories)=>({...prevSubCategories,[api]:subCategories[api][0]}))
             }
+            if(data[api] && !selectedColumns[api]){
+                setSelectedColumns((prevSelectedColumns)=>({...prevSelectedColumns,[api]:Object.keys(data[api][0])}))
+            }
         })
-    },[subCategories,subCategory,apiDisplayStatus])
+    },[subCategories,subCategory,apiDisplayStatus,selectedColumns, data])
     
     useEffect(()=>{
         // console.log(subCategory)
@@ -101,10 +105,12 @@ const useRequestResource = ({ dataset }) => {
     subCategories,
     data,
     subCategory,
+    selectedColumns,
 
     // Functions
     fetchData,
-    chooseDataCategory
+    chooseDataCategory,
+    setSelectedColumns
   }
 }
 

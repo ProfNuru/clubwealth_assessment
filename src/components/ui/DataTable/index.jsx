@@ -15,6 +15,7 @@ const DataTable = () => {
   const [tableRowEvents, setTableRowEvents] = useState({})
   const [selectedTableRow, setSelectedTableRow] = useState(null)
   const [showDetailsModal,setShowDetailsModal] = useState(false)
+  const [showColumnOptions, setShowColumnOptions] = useState(false)
 
   const { 
     apiDisplayStatus,
@@ -39,6 +40,8 @@ const DataTable = () => {
     subCategory,
     subCategories,
     loading,
+    selectedColumns,
+    setSelectedColumns,
     fetchData,
     chooseDataCategory } = useRequestResource({dataset:apiToFetch})
   
@@ -47,8 +50,8 @@ const DataTable = () => {
     // fetchData()
   }
 
-  const getCleanValue = (value) => {
-    let cleanedVal = !isNaN(value) ? formatNumberString(value) : moment(value, dateFormats, true).isValid() ? 
+  const getCleanValue = (value, col) => {
+    let cleanedVal = !isNaN(value) ? formatNumberString(value,col) : moment(value, dateFormats, true).isValid() ? 
                       new Date(value).toLocaleDateString() : value
     // console.log(value, isNaN(value))
     return cleanedVal === "Invalid Date" ? value : cleanedVal 
@@ -105,8 +108,30 @@ const DataTable = () => {
     setSortBy(col,value)
   }
 
-  function formatNumberString(string){
-    let formatted = !isNaN(string) ?
+  const columnSelected = (col, lbl, include) => {
+    let filteredCols = include ? [...selectedColumns[lbl], col] : selectedColumns[lbl].filter((c)=>c!==col)
+    setSelectedColumns({...selectedColumns, [lbl]:filteredCols})
+  }
+
+  const includeAllColumns = (lbl, include) => {
+    let filteredCols = include ? Object.keys(data[lbl][0]) : []
+    setSelectedColumns({...selectedColumns, [lbl]:filteredCols})
+  }
+
+  const cherryPickColumns = (obj, includedColumns) => {
+    // console.log(obj, includedColumns)
+    let currentSet = new Set(includedColumns)
+    let excludedCols = Object.keys(obj).filter(x => !currentSet.has(x))
+    let updatedObj = obj
+    excludedCols.forEach((c)=>{
+      const {[c]:omitted, ...rest} = updatedObj
+      updatedObj = rest
+    })
+    return updatedObj
+  }
+
+  function formatNumberString(string,col){
+    let formatted = col==='date' ? string : !isNaN(string) ?
                 new Intl.NumberFormat('en').format(parseFloat(string))
                 : string
     return formatted
@@ -160,6 +185,10 @@ const DataTable = () => {
         let searchedData = sortData(data[api],sortColumn[api])
                                     .filter((dta)=>searchLogic(dta))
                                     .filter((rec)=>filterLogic(rec))
+                                    .map((obj)=>{
+                                      cherryPickColumns(obj,selectedColumns[api])
+                                      return cherryPickColumns(obj,selectedColumns[api])
+                                    })
 
         for (let i = 0; i < searchedData.length; i += pageSizeObj[api]) {
           const chunk = searchedData.slice(i, i + pageSizeObj[api]);
@@ -176,11 +205,13 @@ const DataTable = () => {
     data, 
     searchFilter,
     dataFilters,
-    sortColumn
+    sortColumn,
+    selectedColumns
   ])
 
   return (
     <>
+      {/* Details modal */}
       {showDetailsModal && <div className={classes.recordModal}>
         <div className={classes.modalContent}>
           <button 
@@ -233,17 +264,53 @@ const DataTable = () => {
           onChange={(e)=>setSearchTerm(label, e.target.value)}
           placeholder={`Search ${label.replace('_',' ')}`}
           />
+
+          <div className={classes.selectColumnsOptions}>
+            <button 
+            onClick={()=>setShowColumnOptions(!showColumnOptions)}
+            className={classes.toggleColumnsOptions}>
+              Choose columns to show
+            </button>
+
+            {showColumnOptions && <div className={classes.columnsOptions}>
+              <div
+              className={classes.columnOption}>
+                <label htmlFor='all'>
+                  All
+                </label>
+                <input 
+                type="checkbox" 
+                id="all"
+                checked={selectedColumns[label].length === Object.keys(data[label][0]).length}
+                onChange={(e)=>includeAllColumns(label,e.target.checked)}
+                />
+              </div>
+              {data[label] && Object.keys(data[label][0])?.map((col,i)=><div
+              key={i}
+              className={classes.columnOption}>
+                <label htmlFor={col}>
+                  {col.replaceAll('_',' ').replace(/([A-Z]+)/g, ' $1').trim()}
+                </label>
+                <input 
+                type="checkbox" 
+                id={col}
+                checked={selectedColumns[label].includes(col)}
+                onChange={(e)=>columnSelected(col, label, e.target.checked)}
+                />
+              </div>)}
+            </div>}
+          </div>
         </div>
 
         {/* Table */}
         {loading[label] && <Loading />}
 
         <div className={classes.tableGrid} style={{
-          gridTemplateColumns:`repeat(${data[label] ? 
-            Object.keys(data[label][0]).length : 0},1fr)`,
+          gridTemplateColumns:`repeat(${paginatedData[label] && paginatedData[label][0] ? 
+            Object.keys(paginatedData[label][0][0]).length : 0},1fr)`,
         }}>
           {/* Column heads */}
-          {data[label] && Object.keys(data[label][0])?.map((col,i)=><div
+          {paginatedData[label] && Object.keys(paginatedData[label][0][0])?.map((col,i)=><div
           onClick={()=>sortBy(label,col)}
           key={col}
           style={{
@@ -285,7 +352,7 @@ const DataTable = () => {
             }}>
               {Array.isArray(row[record]) ? record :
               isValidHttpUrl(row[record]) ? 'View' 
-              : getCleanValue(row[record])}
+              : getCleanValue(row[record],record)}
             </div>)}
           </React.Fragment>)}
         </div>
