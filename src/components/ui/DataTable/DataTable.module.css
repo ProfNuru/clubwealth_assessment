@@ -73,7 +73,7 @@
     position:relative;
     width:100%;
     display:flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     margin:10px 0px;
 }
@@ -89,13 +89,14 @@
 
 /* Select columns */
 .selectColumnsOptions{
-    position: absolute;
+    position: relative;
     display:flex;
     flex-direction: column;
     justify-content: center;
     gap:10px;
     right:0px;
     width:300px;
+    margin-left:10px;
 }
 .toggleColumnsOptions{
     color:#fff;
