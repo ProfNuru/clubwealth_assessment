@@ -15,7 +15,10 @@ const DataTable = () => {
   const [tableRowEvents, setTableRowEvents] = useState({})
   const [selectedTableRow, setSelectedTableRow] = useState(null)
   const [showDetailsModal,setShowDetailsModal] = useState(false)
-  const [showColumnOptions, setShowColumnOptions] = useState(false)
+  const [showColumnOptions, setShowColumnOptions] = useState({
+    api:'',
+    show:false
+  })
 
   const { 
     apiDisplayStatus,
@@ -267,12 +270,12 @@ const DataTable = () => {
 
           <div className={classes.selectColumnsOptions}>
             <button 
-            onClick={()=>setShowColumnOptions(!showColumnOptions)}
+            onClick={()=>setShowColumnOptions({api:label, show:!showColumnOptions.show})}
             className={classes.toggleColumnsOptions}>
               Choose columns to show
             </button>
 
-            {showColumnOptions && <div className={classes.columnsOptions}>
+            {(showColumnOptions.api===label && showColumnOptions.show) && <div className={classes.columnsOptions}>
               <div
               className={classes.columnOption}>
                 <label htmlFor='all'>
@@ -281,7 +284,7 @@ const DataTable = () => {
                 <input 
                 type="checkbox" 
                 id="all"
-                checked={selectedColumns[label].length === Object.keys(data[label][0]).length}
+                checked={data[label] ? selectedColumns[label].length === Object.keys(data[label][0]).length : false}
                 onChange={(e)=>includeAllColumns(label,e.target.checked)}
                 />
               </div>
