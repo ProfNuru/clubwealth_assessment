@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import useRequestResource from '../../../hooks/useRequestResource'
+import React from 'react'
 import DataTable from '../../ui/DataTable'
-import Loading from '../../ui/Loading'
 import classes from './TableView.module.css'
 
 const TableView = () => {

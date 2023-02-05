@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import classes from './DropDownBtn.module.css'
-import { useUpdateStatesContext } from '../../../hooks/StatesHook'
+import { useStatesContext, useUpdateStatesContext } from '../../../hooks/StatesHook'
 
-const DropDownBtn = ({dropdownItems}) => {
+const DropDownBtn = () => {
     const [showDropdown, setShowDropdown] = useState(false)
     const [items, setItems] = useState(null)
     const [itemsList, setItemsList] = useState([])
+    const { apiDisplayStatus } = useStatesContext()
     const {updateApiDisplayStatus} = useUpdateStatesContext()
     
     const toggleDropdown = () => {
@@ -19,9 +20,9 @@ const DropDownBtn = ({dropdownItems}) => {
     }
 
     useEffect(()=>{
-        setItems(dropdownItems)
-        setItemsList(Object.keys(dropdownItems))
-    },[dropdownItems])
+        setItems(apiDisplayStatus)
+        setItemsList(Object.keys(apiDisplayStatus))
+    },[apiDisplayStatus])
 
   return (
     <div className={classes.button}>

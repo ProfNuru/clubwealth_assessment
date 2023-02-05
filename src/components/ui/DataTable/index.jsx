@@ -87,9 +87,6 @@ const DataTable = () => {
           property = property.substr(1);
       }
       return function (a,b) {
-          /* next line works with strings and numbers, 
-           * and you may want to customize it to your needs
-           */
           let first_value = isNaN(a[property]) ? a[property] : parseFloat(a[property])
           let second_value = isNaN(b[property]) ? b[property] : parseFloat(b[property])
           
