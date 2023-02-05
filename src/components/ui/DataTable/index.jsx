@@ -47,6 +47,7 @@ const DataTable = () => {
     setSelectedColumns,
     fetchData,
     chooseDataCategory } = useRequestResource({dataset:apiToFetch})
+  console.log(data)
   
   const selectCategory = (lbl,selection) => {
     chooseDataCategory(lbl, selection)
@@ -135,7 +136,7 @@ const DataTable = () => {
 
   function formatNumberString(string,col){
     let formatted = col==='date' ? string : !isNaN(string) ?
-                new Intl.NumberFormat('en').format(parseFloat(string))
+                string===null ? "-" : new Intl.NumberFormat('en').format(parseFloat(string))
                 : string
     return formatted
   }
@@ -313,7 +314,7 @@ const DataTable = () => {
             Object.keys(paginatedData[label][0][0]).length : 0},1fr)`,
         }}>
           {/* Column heads */}
-          {paginatedData[label] && Object.keys(paginatedData[label][0][0])?.map((col,i)=><div
+          {(paginatedData[label] && paginatedData[label][0]) && Object.keys(paginatedData[label][0][0])?.map((col,i)=><div
           onClick={()=>sortBy(label,col)}
           key={col}
           style={{
@@ -348,12 +349,12 @@ const DataTable = () => {
               textTransform:'capitalize',
               fontWeight:'bolder',
               display:'flex',
-              justifyContent:!isNaN(row[record]) && !Array.isArray(row[record]) ? 'flex-end' : 'center',
+              justifyContent:(row[record]!==null && !isNaN(row[record]) && !Array.isArray(row[record])) ? 'flex-end' : 'center',
               alignItems:'center',
               textAlign: 'center',
               padding:'5px'
             }}>
-              {Array.isArray(row[record]) ? record :
+              {record === 'hash' ? `${row[record].substring(0,3)}...` : Array.isArray(row[record]) ? record :
               isValidHttpUrl(row[record]) ? 'View' 
               : getCleanValue(row[record],record)}
             </div>)}
