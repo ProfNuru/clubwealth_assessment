@@ -39,7 +39,7 @@ const DataTable = () => {
   const dateFormats = [
       moment.ISO_8601,
       "MM/DD/YYYY  :)  HH*mm*ss"
-  ];
+  ]
 
   const { 
     data, 
@@ -62,7 +62,8 @@ const DataTable = () => {
   }
 
   const getCleanValue = (value, col) => {
-    let cleanedVal = !isNaN(value) ? formatNumberString(value,col) : moment(value, dateFormats, true).isValid() ? 
+    let cleanedVal = !isNaN(value) ? formatNumberString(value,col) : 
+                      isIsoDate(value) ?
                       new Date(value).toLocaleDateString() : value
     // console.log(value, isNaN(value))
     return cleanedVal === "Invalid Date" ? value : cleanedVal 
@@ -127,7 +128,7 @@ const DataTable = () => {
   }
 
   const includeAllColumns = (lbl, include) => {
-    let filteredCols = include ? Object.keys(data[lbl][0]) : []
+    let filteredCols = (data[lbl] && include) ? Object.keys(data[lbl][0]) : []
     setSelectedColumns({...selectedColumns, [lbl]:filteredCols})
   }
 
@@ -143,9 +144,31 @@ const DataTable = () => {
     return updatedObj
   }
 
+
+  function isIsoDate(str) {
+    let date = str
+    var dateParsed = new Date(date)
+    
+    try {
+        let parsed = dateParsed.toISOString().split(':')
+        let splitDate = date.split(':')
+        parsed.pop()
+        splitDate.pop()
+        let newParsed = parsed.join(':')
+        let fmtDate = splitDate.join(':')
+        if(newParsed==fmtDate) {
+            return true
+        }
+    } catch (error) {
+        return false
+    }
+    return false
+  }
+
   function formatNumberString(string,col){
     let formatted = col==='date' ? string : !isNaN(string) ?
-                string===null ? "-" : new Intl.NumberFormat('en').format(parseFloat(string))
+                string===null ? "-" : 
+                new Intl.NumberFormat('en').format(parseFloat(string))
                 : string
     return formatted
   }
@@ -351,7 +374,8 @@ const DataTable = () => {
               textAlign: 'center',
               padding:'5px'
             }}>
-              {record === 'hash' ? `${row[record].substring(0,3)}...` : Array.isArray(row[record]) ? record :
+              {record === 'hash' ? `${row[record].substring(0,3)}...` 
+              : Array.isArray(row[record]) ? record :
               isValidHttpUrl(row[record]) ? 'View' 
               : getCleanValue(row[record],record)}
             </div>)}

@@ -59,11 +59,13 @@
 .detailsGrid{
     display:grid;
     grid-template-columns: 1fr 1fr;
-    gap:15px;
+    gap:10px;
 }
 .detailFields{
     display:flex;
+    align-items: center;
     gap:10px;
+    border-bottom:1px solid #ccc;
 }
 .detailFields p{
     font-size:1.2em;
@@ -75,4 +77,41 @@
 }
 .detailFields p{
     color:#000;
+}
+.subDataContainerTitle{
+    grid-column: span 2;
+    text-align:center;
+    margin-top:10px;
+    margin-bottom: 0px;
+    color:#000;
+    font-size:1.4em;
+    text-transform: capitalize;
+}
+.subDataContainer{
+    border:1px solid #ccc;
+    grid-column: span 2;
+    border-radius: 10px;
+    padding:10px;
+    display:flex;
+    flex-direction: column;
+    gap:15px;
+
+}
+.subDataItem{
+    border-bottom:2px solid #000;
+}
+
+
+@media only screen and (max-width:600px){
+    .detailsGrid{
+        grid-template-columns: 1fr;
+    }
+    .removeEntryBtn{
+        display:block;
+        margin-bottom:0px;
+    }
+    small{
+        display:inline-block;
+        margin-bottom:10px;
+    }
 }

@@ -9,7 +9,7 @@ import useLocalStorage from './useLocalStorage'
 
 const useRequestResource = ({ dataset }) => {
     const [noInternet, setNoInternet] = useState(false)
-    const [data, setData] = useLocalStorage('data',{
+    const [data, setData] = useState({
         star_wars:null,
         covid:null,
         cats:null
