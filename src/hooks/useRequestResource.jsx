@@ -56,15 +56,15 @@ const useRequestResource = ({ dataset }) => {
                     setLoading({...loading,[api]:true})
                     if(apiObjects[api][subCategory[api]]){
                         const res = await fetchDataset(apiObjects[api][subCategory[api]])
-                        // console.log('data fetched:', res)
+                        setLoading({...loading, [api]:false})
                         if(res){
                             setData((prevData)=>({...prevData, [api]:res}))
                         }
                     }
                 } catch (error) {
                     setNoInternet(true)
+                    setLoading({...loading, [api]:false})
                 }
-                setLoading({...loading, [api]:false})
                 // console.log('loading stopped')
             })
         }

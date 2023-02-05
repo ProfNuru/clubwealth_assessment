@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Loading from '../Loading'
 import classes from './DataTable.module.css'
-import moment from 'moment'
 import PageCell from '../PageCell'
 import useRequestResource from '../../../hooks/useRequestResource'
 import { useStatesContext } from '../../../hooks/StatesHook'
@@ -22,6 +21,7 @@ const DataTable = () => {
     api:'',
     show:false
   })
+  const [dataFetchStatus, setDataFetchStatus] = useState({})
 
   const { 
     apiDisplayStatus,
@@ -35,11 +35,6 @@ const DataTable = () => {
     updateFilters,
     setSortBy
   } = useUpdateStatesContext()
-
-  const dateFormats = [
-      moment.ISO_8601,
-      "MM/DD/YYYY  :)  HH*mm*ss"
-  ]
 
   const { 
     data, 
@@ -207,6 +202,7 @@ const DataTable = () => {
     apiToFetch.forEach((api)=>{
       pageSizeObj[api] = pageSize[api] ? pageSize[api] : 10
       pageObj[api] = 1
+      setDataFetchStatus({...dataFetchStatus, [api]:true})
       if(data[api]){
         let chunks = []
         let searchLogic = (row)=>JSON.stringify(row).toLowerCase().search(searchFilter[api].toLowerCase()) > -1
@@ -231,6 +227,7 @@ const DataTable = () => {
           chunks.push(chunk)
         }
         paginatedDataObj[api] = chunks
+        setDataFetchStatus({...dataFetchStatus, [api]:false})
       }
     })
     setPaginatedData(paginatedDataObj)
@@ -248,7 +245,8 @@ const DataTable = () => {
   return (
     <>
       {/* No Internet alert */}
-      {(noInternet && showFailureAlertModal) && <NoInternetAlert btnAction={closeNoInternetModal} />}
+      {(noInternet && showFailureAlertModal) && 
+      <NoInternetAlert btnAction={closeNoInternetModal} />}
 
       {/* Details modal */}
       {showDetailsModal && <RecordDetail
@@ -327,7 +325,7 @@ const DataTable = () => {
         </div>
 
         {/* Table */}
-        {loading[label] && <Loading />}
+        {dataFetchStatus[label] && <Loading />}
 
         <div className={classes.tableGrid} style={{
           gridTemplateColumns:`repeat(${paginatedData[label] && paginatedData[label][0] ? 
