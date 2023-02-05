@@ -6,7 +6,8 @@ import cats from "../APIs/cats"
 import useLocalStorage from './useLocalStorage'
 
 const useRequestResource = ({ dataset }) => {
-    const [data, setData] = useState({
+    const [noInternet, setNoInternet] = useState(false)
+    const [data, setData] = useLocalStorage('data',{
         star_wars:null,
         covid:null,
         cats:null
@@ -31,10 +32,15 @@ const useRequestResource = ({ dataset }) => {
     const fetchDataset = useCallback(async (fetchFxn) => {
         try {
             const results = await fetchFxn()
+            if(results.toString()==="AxiosError: Network Error"){
+                setNoInternet(true)
+                return null
+            }
+            setNoInternet(false)
             return results
         } catch (error) {
             console.log(error)
-            return error
+            return null
         }
     },[subCategory])
 
@@ -49,10 +55,12 @@ const useRequestResource = ({ dataset }) => {
                     if(apiObjects[api][subCategory[api]]){
                         const res = await fetchDataset(apiObjects[api][subCategory[api]])
                         // console.log('data fetched:', res)
-                        setData((prevData)=>({...prevData, [api]:res}))
+                        if(res){
+                            setData((prevData)=>({...prevData, [api]:res}))
+                        }
                     }
                 } catch (error) {
-                    console.log(error)
+                    setNoInternet(true)
                 }
                 setLoading({...loading, [api]:false})
                 // console.log('loading stopped')
@@ -106,6 +114,7 @@ const useRequestResource = ({ dataset }) => {
     data,
     subCategory,
     selectedColumns,
+    noInternet,
 
     // Functions
     fetchData,

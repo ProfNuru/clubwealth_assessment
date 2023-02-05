@@ -1,0 +1,48 @@
+.noInternetAlertModal{
+    position:fixed;
+    top:0;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:100;
+    width:600px;
+    box-shadow: var(--shadow);
+    border:1px solid #ccc;
+    background-color: #fff;
+    padding:20px;
+    border-radius: 20px;
+}
+.noInternetAlertModal h4{
+    color:darkred;
+    text-align: center;
+    font-size:1.4em;
+}
+.noInternetAlertModal p{
+    color:var(--btn-bg);
+    text-align:center;
+    font-size:1.2em;
+    font-weight:bolder;
+}
+.closeAlertModalBtn{
+    position: absolute;
+    right:0;
+    top:0;
+    color:darkred;
+    background-color: #fff;
+    border:1px solid darkred;
+    font-size:1.6em;
+    font-weight:bolder;
+    padding:1px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.closeAlertModalBtn:hover{
+    color:#fff;
+    background-color: darkred;
+}
+
+/* Mobile screen */
+@media only screen and (max-width:600px){
+    .noInternetAlertModal{
+        width:100%;
+    }
+}

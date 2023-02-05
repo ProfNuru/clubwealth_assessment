@@ -6,8 +6,10 @@ import PageCell from '../PageCell'
 import useRequestResource from '../../../hooks/useRequestResource'
 import { useStatesContext } from '../../../hooks/StatesHook'
 import { useUpdateStatesContext } from '../../../hooks/StatesHook'
+import NoInternetAlert from '../NoInternetAlert'
 
 const DataTable = () => {
+  const [showFailureAlertModal, setShowFailureAlertModal] = useState(true)
   const [apiToFetch, setApiToFetch] = useState([])
   const [paginatedData, setPaginatedData] = useState({})
   const [pageSize, setPageSize] = useState({})
@@ -45,8 +47,13 @@ const DataTable = () => {
     loading,
     selectedColumns,
     setSelectedColumns,
+    noInternet,
     fetchData,
     chooseDataCategory } = useRequestResource({dataset:apiToFetch})
+
+  const closeNoInternetModal = ()=>{
+    setShowFailureAlertModal(false)
+  }
   
   const selectCategory = (lbl,selection) => {
     chooseDataCategory(lbl, selection)
@@ -94,11 +101,13 @@ const DataTable = () => {
           return result * sortOrder;
       }
     }
+
     let objArr
     if(objs){
       objArr = [...objs]
       objArr.sort(dynamicSort(objKey))
     }
+    
     return objArr
   }
 
@@ -214,6 +223,9 @@ const DataTable = () => {
 
   return (
     <>
+      {/* No Internet alert */}
+      {(noInternet && showFailureAlertModal) && <NoInternetAlert btnAction={closeNoInternetModal} />}
+
       {/* Details modal */}
       {showDetailsModal && <div className={classes.recordModal}>
         <div className={classes.modalContent}>
