@@ -48,6 +48,9 @@ const DataComponent = () => {
         <li style={{
           color:'#000'
         }}>Click a row to view details of that record</li>
+        <li style={{
+          color:'#000'
+        }}>Click a 'Choose columns to show button' and select which columns you want to display</li>
       </ul>
       {selectedDisplayType}
     </Suspense>

@@ -47,7 +47,6 @@ const DataTable = () => {
     setSelectedColumns,
     fetchData,
     chooseDataCategory } = useRequestResource({dataset:apiToFetch})
-  console.log(data)
   
   const selectCategory = (lbl,selection) => {
     chooseDataCategory(lbl, selection)
@@ -187,12 +186,12 @@ const DataTable = () => {
           return true
         }
         let searchedData = sortData(data[api],sortColumn[api])
-                                    .filter((dta)=>searchLogic(dta))
-                                    .filter((rec)=>filterLogic(rec))
-                                    .map((obj)=>{
-                                      cherryPickColumns(obj,selectedColumns[api])
-                                      return cherryPickColumns(obj,selectedColumns[api])
-                                    })
+                            .map((obj)=>{
+                              cherryPickColumns(obj,selectedColumns[api])
+                              return cherryPickColumns(obj,selectedColumns[api])
+                            })
+                            .filter((dta)=>searchLogic(dta))
+                            .filter((rec)=>filterLogic(rec))
 
         for (let i = 0; i < searchedData.length; i += pageSizeObj[api]) {
           const chunk = searchedData.slice(i, i + pageSizeObj[api]);

@@ -14,7 +14,7 @@ export function useUpdateStatesContext(){
 
 export const StateProvider = ({ children }) => {
     const [dataFilters, setDataFilters] = useLocalStorage('dataFilters',[])
-    const [searchFilter, setSearchFilter] = useLocalStorage('searchFilter', {
+    const [searchFilter, setSearchFilter] = useState({
         star_wars:'',
         covid:'',
         cats:''
