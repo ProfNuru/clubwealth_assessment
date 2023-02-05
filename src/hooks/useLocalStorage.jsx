@@ -1,3 +1,6 @@
+// Hook for setting and getting data from localStorage
+// Usage: const [value, setValue] = useLocalStorage([key], [initialValue])
+
 import React, { useEffect, useState } from 'react'
 
 function getSavedValue(key,initialValue){

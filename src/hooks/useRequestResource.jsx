@@ -1,3 +1,5 @@
+// Hook for API requests
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useStatesContext } from './StatesHook'
 import starwars from "../APIs/starwars"

@@ -7,6 +7,7 @@ import useRequestResource from '../../../hooks/useRequestResource'
 import { useStatesContext } from '../../../hooks/StatesHook'
 import { useUpdateStatesContext } from '../../../hooks/StatesHook'
 import NoInternetAlert from '../NoInternetAlert'
+import RecordDetail from '../RecordDetail'
 
 const DataTable = () => {
   const [showFailureAlertModal, setShowFailureAlertModal] = useState(true)
@@ -227,27 +228,12 @@ const DataTable = () => {
       {(noInternet && showFailureAlertModal) && <NoInternetAlert btnAction={closeNoInternetModal} />}
 
       {/* Details modal */}
-      {showDetailsModal && <div className={classes.recordModal}>
-        <div className={classes.modalContent}>
-          <button 
-          onClick={closeModal}
-          className={classes.closeBtn}>x</button>
-          <h1>{selectedTableRow?.api.replace('_',' ')}</h1>
-          <h2>{subCategory[selectedTableRow?.api].substring(3).replace(/([A-Z]+)/g, ' $1').trim()}</h2>
-          <button 
-          onClick={()=>filterOutRecord(selectedTableRow?.data)}
-          className={classes.removeEntryBtn}>Remove this record</button>
-          <small style={{color:'#000',padding:'0px 10px'}}>This removes this record from the table</small>
-          
-          <div className={classes.detailsGrid}>
-            {Object.keys(selectedTableRow?.data).map((field,i)=><div 
-            key={i}
-            className={classes.detailFields}>
-              <p><span>{field.replaceAll('_',' ').replace(/([A-Z]+)/g, ' $1').trim()}</span>: {selectedTableRow?.data[field]}</p>
-            </div>)}
-          </div>
-        </div>
-      </div>}
+      {showDetailsModal && <RecordDetail
+        selectedTableRow={selectedTableRow}
+        closeModal={closeModal}
+        removeRecordAction={filterOutRecord}
+        subCategory={subCategory}
+      />}
 
       {apiToFetch?.map((label)=><div key={label}
       className={classes.tableWrapper}>

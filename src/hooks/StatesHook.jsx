@@ -29,6 +29,8 @@ export const StateProvider = ({ children }) => {
         covid:false,
         cats:false
     })
+
+    // Only table view implemented
     const [displayType, setDisplayType] = useLocalStorage('displayType',{
         table_view:true,
     })
